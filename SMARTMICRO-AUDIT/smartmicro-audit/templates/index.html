@@ -174,6 +174,7 @@ tr:last-child td{border-bottom:none}
 </head>
 <body>
 
+<div style="background:var(--orange);color:#fff;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;letter-spacing:.06em;padding:6px 14px" class="no-print">DEMO PREVIEW · BUILT BY NAVVAI FOR SMARTMICRO · REFINED WITH YOUR FEEDBACK AND DEPLOYED BEFORE THE SPRINT STARTS</div>
 <header class="site">
   <div class="wrap">
     <div class="logo"><span class="dot"></span>smartmicro <span class="lite">| Detection Check</span></div>
@@ -280,7 +281,7 @@ tr:last-child td{border-bottom:none}
     </div>
     <div class="card">
       <h3 style="margin-bottom:6px">Unlock the full report</h3>
-      <p class="small" style="margin-bottom:16px">The full report includes your scorecard, the cost of standing still calculated from your own figures, an honest technology comparison, your data gaps, and a 90 day plan. We will also send it to your inbox so you can share it with your team.</p>
+      <p class="small" style="margin-bottom:16px">The full report includes your scorecard, the cost of standing still calculated from your own figures, an honest technology comparison, your data gaps, and a 90 day plan. In the live version the report also emails itself to you so you can share it with your team; in this demo it displays on screen.</p>
       <div class="gate-grid">
         <div><label for="gFirst">First name</label><input type="text" id="gFirst" autocomplete="given-name"></div>
         <div><label for="gLast">Last name</label><input type="text" id="gLast" autocomplete="family-name"></div>
@@ -356,7 +357,7 @@ const QUESTIONS = [
   },
   {
     id:'region', eyebrow:'About you', title:'Where is your network?',
-    why:'Why we ask: it sets the currency in the money maths and the privacy rules that apply to visual detection.',
+    why:'Why we ask: it sets the currency in the money maths (pounds, euros, dirhams or dollars) and the privacy rules that apply to visual detection.',
     type:'single',
     options:[
       {v:'uk', t:'United Kingdom'},
@@ -491,10 +492,12 @@ function currencySymbol(){
   const r = state.answers.region?.value;
   if(r==='uk') return '£';
   if(r==='europe') return '€';
+  if(r==='me') return 'AED';
   return '$';
 }
 function fmtMoney(n){
-  return currencySymbol() + Math.round(n).toLocaleString('en-GB');
+  const sym = currencySymbol();
+  return sym + (sym.length>1?' ':'') + Math.round(n).toLocaleString('en-GB');
 }
 
 /* ---------- flow ---------- */
@@ -915,7 +918,7 @@ function chartSVG(money){
     <path d="${doNothing}" fill="none" stroke="#CE4A4A" stroke-width="2.5" stroke-dasharray="6 5"/>
     <path d="${plan}" fill="none" stroke="#1F9D5B" stroke-width="2.5"/>
     <text x="${W-padR}" y="${y(m0)-8}" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#CE4A4A">Do nothing</text>
-    <text x="${W-padR}" y="${y(planAt(12))+16}" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#1F9D5B">With the plan</text>
+    <text x="${W-padR}" y="${y(planAt(12))+16}" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#1F9D5B">With the Part 5 plan</text>
   </svg>`;
 }
 
@@ -1011,8 +1014,9 @@ function buildReport(){
         <div><div class="bignum">${fmtMoney(R.money.monthly)}</div><div class="small">every month, whether or not anything changes</div></div>
       </div>
       <div class="formula">${esc(R.money.formula)}${R.money.estimated?'<br>One or both figures came from a band you picked rather than an exact number, so treat this as an order of magnitude.':''}</div>
+      <div style="background:var(--green-soft);border:1px solid #BFE3CE;border-radius:10px;padding:12px 16px;margin:14px 0 4px;font-size:.93rem"><b style="color:var(--ink)">What actually brings the cost down (the green line):</b> the plan in Part 5 of this report. A 90 day pilot at one junction, then above ground radar detection replacing in carriageway kit across the network. Above ground sensors take detection out of the road surface, so the faults, closures and repair crews that create the red line stop being generated. Nothing in this chart happens on its own — the green line IS Part 5.</div>
       <div class="chart-wrap">${chartSVG(R.money)}</div>
-      <p class="chart-caption"><b>How to read this chart:</b> the dashed red line is your monthly exposure if nothing changes. The green line is the plan in Part 5. ${esc(R.money.assumptions)}</p>
+      <p class="chart-caption"><b>How to read this chart:</b> the dashed red line is your monthly maintenance exposure if nothing changes. The green line is what happens to that same exposure if you follow the Part 5 plan (pilot one junction, then roll out above ground detection). ${esc(R.money.assumptions)}</p>
       <p class="tiny" style="margin-top:8px">These are estimates built from your own figures, not guarantees. The pilot in Part 5 exists precisely to replace this projection with your measured numbers.</p>`;
   } else {
     moneyBlock=`
@@ -1025,7 +1029,7 @@ function buildReport(){
   <div style="padding-top:8px">
     <div class="eyebrow">Detection Modernisation Check${state.gate.organisation?' · '+esc(state.gate.organisation):''}</div>
     <h1 style="font-size:2rem;margin:8px 0 6px">${first?first+', h':'H'}ere is where your network stands</h1>
-    <p class="small no-print" id="sentLine">${CONSULTANT?'Consultant mode: no email gate, scores recompute live from the answers.':'A copy of this report is on its way to '+esc(state.gate.email)+'. Forward it freely; the glossary at the end is written for people who never saw these questions.'}</p>
+    <p class="small no-print" id="sentLine">${CONSULTANT?'Consultant mode: no email gate, scores recompute live from the answers.':'Demo build: in the live version this report emails itself to '+esc(state.gate.email)+' automatically. The glossary at the end is written for people who never saw these questions, so it forwards well.'}</p>
     <div class="howfits">
       <div><b>1 · Verdict</b>where you stand and why</div>
       <div><b>2 · Cost</b>standing still, in your figures</div>
@@ -1072,8 +1076,9 @@ function buildReport(){
       </div>`).join('')}
   </div>
   <div class="card">
-    <h3 style="margin-bottom:4px">Why this is within reach</h3>
-    <p>You have already sized the problem yourself${R.money?': '+R.money.faults+' callouts a year at '+fmtMoney(R.money.cost)+' each, in your figures, not ours':goal?' and named the goal it blocks':''}. The pilot in Part 5 is one junction, above ground, run alongside what you have, so proving it costs one junction's worth of patience rather than a network's worth of budget.${R.distance!==null?' And the distance is short: your weakest pillar is '+R.distance+' points from the next band, which is a gap the plan is built to close, not a wall.':' Your weakest pillar already clears the top band, so the plan is about speed, not repair.'}</p>
+    <h3 style="margin-bottom:4px">What is within reach, and why</h3>
+    <p style="margin-bottom:10px"><b style="color:var(--ink)">The thing within reach is specific:</b> a working above ground detection pilot at one junction, proven against your own baseline, inside 90 days — and with it, the move to the next band on the verdict scale above. Not a network wide replacement, not a leap of faith. One junction, measured.</p>
+    <p>Why we say it is close rather than wishful: you have already sized the problem yourself${R.money?': '+R.money.faults+' callouts a year at '+fmtMoney(R.money.cost)+' each, in your figures, not ours':goal?' and named the goal it blocks':''}. The pilot in Part 5 is one junction, above ground, run alongside what you have, so proving it costs one junction's worth of patience rather than a network's worth of budget.${R.distance!==null?' And the distance is short: your weakest pillar is '+R.distance+' points from the next band, which is a gap the plan is built to close, not a wall.':' Your weakest pillar already clears the top band, so the plan is about speed, not repair.'}</p>
   </div>
   <p class="bridge">The verdict says where you stand. Part 2 says what standing still costs, using only the figures you gave us.</p>
 
@@ -1090,7 +1095,7 @@ function buildReport(){
   <div class="part-tag"><span class="part-num">PART 3</span><span class="eyebrow">Exposure</span></div>
   <div class="card">
     <h3 style="margin-bottom:4px">Decisions versus data</h3>
-    <p class="section-explain">Each decision you said your team is making, checked against the data your current detection can actually supply. BLIND means the decision rests entirely on data you are not collecting.</p>
+    <p class="section-explain">Where this comes from: two of your own answers. You told us which decisions your team is making right now (question 6), and you told us what detection you run (question 4). Every decision needs certain data to be made well — a junction redesign needs turning counts, a cycling investment needs cyclist numbers. This table checks each of your live decisions against the data your current detection can actually produce. COVERED means the data exists. PARTIAL means some of it does. BLIND means the decision is currently being made entirely without the data it rests on — which in practice means experience and guesswork are standing in for measurement.</p>
     <table>
       <tr><th>Decision on your desk</th><th>Data it rests on</th><th>Your position</th><th>Status</th></tr>
       ${gapRows}
@@ -1220,6 +1225,7 @@ function buildReport(){
       <tr><td><b>Virtual zone</b></td><td>A software defined detection area inside a radar's field of view that does the job of an in carriageway loop. One sensor supports up to 32.</td></tr>
       <tr><td><b>Origin destination</b></td><td>Data showing where vehicles entering a junction actually go, produced by tracking them through the turn.</td></tr>
       <tr><td><b>VRU</b></td><td>Vulnerable road user: cyclists and pedestrians.</td></tr>
+      <tr><td><b>Covered / Partial / Blind</b></td><td>The statuses in the decisions versus data table. They compare each decision the reader's team is making against the data their current detection can produce. Blind means the decision is being made without the data it needs.</td></tr>
       <tr><td><b>The money formula</b></td><td>Annual exposure equals the reader's own fault count multiplied by their own cost per repair. Nothing was added by us, and the section is hidden entirely if the figures were not supplied.</td></tr>
     </table>
   </div>
@@ -1230,6 +1236,7 @@ function buildReport(){
     <p style="max-width:560px;margin:0 auto">A free consultation with smartmicro walks through your report, your junction and your figures${R.money?', including the '+fmtMoney(R.money.annual)+' a year this report calculated from your own numbers':''}. Bring the person who owns the budget decision, not just the technical team. It is a working session, not a pitch.</p>
     <a class="btn" href="https://www.smartmicro.com/company/contact-us/" target="_blank" rel="noopener" onclick="track('cta_click')">Book the consultation</a>
     <p class="tiny" style="margin-top:12px;color:#8B949E">Or email <a href="mailto:{{ contact_email }}" style="color:#F07E00">{{ contact_email }}</a> with this report attached.</p>
+    <p class="tiny no-print" style="margin-top:8px;color:#8B949E">Demo note: in the live version this button books directly into your calendar link, and the report email carries the same booking button.</p>
   </div>
 
   <div class="actions-row no-print">
