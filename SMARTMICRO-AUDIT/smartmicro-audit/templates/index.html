@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detection Modernisation Check | smartmicro</title>
+<meta name="description" content="A free 4 minute check for cities, mobility departments and highway operators. See where your detection estate stands, what it costs you, and the 90 day path to fix it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1B2026; --body:#3C444D; --muted:#6A737D;
+  --bg:#F4F5F4; --card:#FFFFFF; --line:#E1E4E2;
+  --orange:#F07E00; --orange-dark:#D66E00; --orange-soft:#FDF1E3;
+  --green:#1F9D5B; --green-soft:#E8F5EE;
+  --amber:#DFA321; --amber-soft:#FBF4E2;
+  --red:#CE4A4A; --red-soft:#FAEAEA;
+  --dark:#14181D; --dark-2:#1E242B; --dark-line:#2C333B;
+  --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--body);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Barlow',sans-serif;color:var(--ink);line-height:1.15;font-weight:800;letter-spacing:-.01em}
+.mono{font-family:'IBM Plex Mono',monospace}
+.eyebrow{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.14em;font-size:.82rem;color:var(--orange-dark)}
+.eyebrow.on-dark{color:var(--orange)}
+.wrap{max-width:880px;margin:0 auto;padding:0 22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px 28px;margin-bottom:18px}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--orange);color:#fff;border:none;border-radius:999px;font-family:'Barlow',sans-serif;font-weight:700;font-size:1.02rem;padding:14px 30px;cursor:pointer;transition:background .15s, transform .1s}
+.btn:hover{background:var(--orange-dark)}
+.btn:active{transform:scale(.98)}
+.btn:focus-visible,.opt:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn-ghost:hover{background:#fff;border-color:var(--muted)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.small{font-size:.88rem;color:var(--muted)}
+.tiny{font-size:.8rem;color:var(--muted)}
+a{color:var(--orange-dark)}
+header.site{background:var(--dark);color:#fff;padding:14px 0;position:sticky;top:0;z-index:50;border-bottom:1px solid var(--dark-line)}
+header.site .wrap{display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.12rem;color:#fff;letter-spacing:-.01em}
+.logo .dot{width:22px;height:22px;border-radius:50%;background:conic-gradient(var(--orange) 0 270deg, #3A424B 270deg 360deg);display:inline-block}
+.logo .lite{color:#8B949E;font-weight:500}
+.progress-rail{height:3px;background:var(--dark-line);position:relative}
+.progress-fill{height:3px;background:var(--orange);width:0%;transition:width .3s}
+/* ---------- hero ---------- */
+.hero{background:var(--dark);color:#C9D0D8;padding:64px 0 0;overflow:hidden}
+.hero h1{color:#fff;font-size:clamp(2rem,5vw,3.1rem);margin:14px 0 16px;max-width:640px}
+.hero h1 em{font-style:normal;color:var(--orange)}
+.hero p.lede{max-width:600px;font-size:1.12rem}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:30px;align-items:center}
+.hero-cta{margin:26px 0 8px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.hero-meta{display:flex;gap:26px;margin:26px 0 40px;flex-wrap:wrap}
+.hero-meta div{font-size:.9rem;color:#8B949E}
+.hero-meta b{display:block;color:#fff;font-size:1.05rem;font-weight:700}
+.radar-stage{position:relative;min-height:320px}
+.radar-stage svg{width:100%;height:auto;display:block}
+@keyframes sweep{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.beam{transform-origin:180px 180px;animation:sweep 6s linear infinite}
+@media (prefers-reduced-motion: reduce){.beam{animation:none}}
+.hero-strip{background:var(--dark-2);border-top:1px solid var(--dark-line);padding:14px 0;font-size:.9rem;color:#8B949E}
+.hero-strip .wrap{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+/* ---------- quiz ---------- */
+.screen{display:none;padding:40px 0 70px}
+.screen.active{display:block}
+.qcount{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.qcard h2{font-size:1.5rem;margin-bottom:8px}
+.why{background:var(--orange-soft);border-left:3px solid var(--orange);border-radius:0 8px 8px 0;padding:9px 14px;font-size:.9rem;color:#7A5326;margin:12px 0 20px}
+.opts{display:grid;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:14px 18px;font-family:'Barlow',sans-serif;font-size:1.02rem;color:var(--ink);cursor:pointer;transition:border-color .12s, background .12s}
+.opt:hover{border-color:var(--orange)}
+.opt.selected{border-color:var(--orange);background:var(--orange-soft)}
+.opt .tick{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#fff}
+.opt.selected .tick{background:var(--orange);border-color:var(--orange)}
+.numrow{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.numrow .prefix{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:13px 16px}
+input[type=number],input[type=text],input[type=email],textarea{width:100%;font-family:'Barlow',sans-serif;font-size:1.02rem;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:13px 16px}
+textarea{min-height:96px;resize:vertical}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
+.chip{background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:7px 15px;font-size:.9rem;font-family:'Barlow',sans-serif;color:var(--body);cursor:pointer}
+.chip:hover{border-color:var(--orange);color:var(--ink)}
+.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:24px}
+.linklike{background:none;border:none;font-family:'Barlow',sans-serif;font-size:.92rem;color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.linklike:hover{color:var(--ink)}
+.notsure-box{margin-top:16px;padding-top:16px;border-top:1px dashed var(--line)}
+/* ---------- gate ---------- */
+.gate-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gate-grid .full{grid-column:1/-1}
+.teaser{background:var(--dark);color:#C9D0D8;border-radius:var(--radius);padding:26px 28px;margin-bottom:18px}
+.teaser .band-name{font-size:1.7rem;font-weight:800;color:#fff}
+.blurred{filter:blur(6px);user-select:none;pointer-events:none}
+label{font-size:.85rem;font-weight:600;color:var(--ink);display:block;margin-bottom:5px}
+/* ---------- report ---------- */
+.part-tag{display:inline-flex;align-items:center;gap:8px;margin-bottom:10px}
+.part-num{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:.78rem;background:var(--ink);color:#fff;border-radius:6px;padding:2px 8px}
+.bridge{font-style:italic;color:var(--muted);margin:6px 4px 18px;font-size:.95rem}
+.verdict-hero{background:var(--dark);color:#C9D0D8;border-radius:var(--radius);padding:30px;margin-bottom:18px}
+.verdict-hero h2{color:#fff;font-size:2rem;margin:6px 0 8px}
+.scale{margin:22px 0 8px}
+.scale-bar{display:flex;height:14px;border-radius:999px;overflow:hidden;border:1px solid var(--dark-line)}
+.scale-bar div{height:100%}
+.scale-labels{display:flex;font-size:.78rem;color:#8B949E;margin-top:6px}
+.scale-labels div{padding-right:6px}
+.you-marker{position:relative;height:26px;margin-bottom:2px}
+.you-pin{position:absolute;transform:translateX(-50%);text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;color:var(--orange);white-space:nowrap}
+.you-pin::after{content:"";display:block;width:2px;height:8px;background:var(--orange);margin:2px auto 0}
+.rule-line{font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#8B949E;margin-top:14px;line-height:1.7}
+.pillar{margin-bottom:16px}
+.pillar-top{display:flex;justify-content:space-between;align-items:baseline}
+.pillar-top b{color:var(--ink)}
+.pillar-score{font-family:'IBM Plex Mono',monospace;font-weight:600}
+.bar-rail{height:10px;background:#EDEFEC;border-radius:999px;margin:6px 0 4px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:999px;background:var(--orange)}
+.bar-fill.weak{background:var(--red)}
+.bar-fill.ok{background:var(--amber)}
+.bar-fill.good{background:var(--green)}
+.pillar .small{margin-top:2px}
+.badge{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;border-radius:6px;padding:3px 9px}
+.badge.green{background:var(--green-soft);color:var(--green)}
+.badge.amber{background:var(--amber-soft);color:#9A6E0D}
+.badge.red{background:var(--red-soft);color:var(--red)}
+.badge.grey{background:#EDEFEC;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+th{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:.78rem;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1.5px solid var(--line)}
+td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td b{color:var(--ink)}
+tr:last-child td{border-bottom:none}
+.bignum{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:2rem;color:var(--ink)}
+.formula{font-family:'IBM Plex Mono',monospace;font-size:.82rem;background:#F7F8F6;border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:12px 0;color:var(--body);line-height:1.8}
+.state-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.state-card{border:1.5px solid var(--line);border-radius:12px;padding:18px 20px}
+.state-card.today{background:#F7F8F6}
+.state-card.future{background:var(--green-soft);border-color:#BFE3CE}
+.state-card h4{margin-bottom:8px}
+.state-card ul{padding-left:18px;font-size:.93rem}
+.state-card li{margin-bottom:5px}
+.phase{border-left:3px solid var(--orange);padding:2px 0 6px 18px;margin:0 0 20px 4px}
+.phase .ph-week{font-family:'IBM Plex Mono',monospace;font-size:.76rem;font-weight:600;color:var(--orange-dark)}
+.phase h4{margin:3px 0 6px}
+.goal-card{background:var(--orange-soft);border:1.5px solid #F3D5AE;border-radius:12px;padding:18px 22px;margin-bottom:20px}
+.goal-card .q{font-size:1.15rem;font-weight:700;color:var(--ink);font-style:italic}
+.trace-row td:first-child{width:38%}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:16px}
+.legend div{background:#F7F8F6;border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:.85rem}
+.legend b{display:block;color:var(--ink);font-size:.92rem}
+.wider{display:grid;grid-template-columns:1fr;gap:12px}
+.wider .card{margin-bottom:0}
+.cta-final{background:var(--dark);color:#C9D0D8;border-radius:var(--radius);padding:34px;text-align:center}
+.cta-final h2{color:#fff;font-size:1.7rem;margin-bottom:10px}
+.cta-final .btn{margin-top:16px}
+.actions-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+.footer-note{text-align:center;padding:30px 0 50px;font-size:.82rem;color:var(--muted)}
+.section-explain{font-size:.88rem;color:var(--muted);margin-bottom:14px}
+.gap-note{background:var(--amber-soft);border:1px solid #EFD9A6;border-radius:10px;padding:12px 16px;font-size:.9rem;margin-top:10px;color:#7A5A12}
+.howfits{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:14px}
+.howfits div{background:#F7F8F6;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:.78rem;color:var(--muted)}
+.howfits b{display:block;color:var(--ink);font-size:.85rem}
+.chart-wrap{margin:14px 0 4px}
+.chart-caption{font-size:.82rem;color:var(--muted);margin-top:8px}
+@media(max-width:760px){
+  .hero-grid{grid-template-columns:1fr}
+  .radar-stage{min-height:0}
+  .state-cards,.gate-grid{grid-template-columns:1fr}
+  .card{padding:20px}
+}
+@media print{
+  header.site,.hero,.hero-strip,.qnav,.actions-row,.cta-final,.no-print{display:none !important}
+  body{background:#fff}
+  .card{border:1px solid #ccc;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="logo"><span class="dot"></span>smartmicro <span class="lite">| Detection Check</span></div>
+    <div class="mono tiny" style="color:#8B949E" id="stepIndicator"></div>
+  </div>
+  <div class="progress-rail" style="margin-top:14px;margin-bottom:-14px"><div class="progress-fill" id="progressFill"></div></div>
+</header>
+
+<!-- ============ LANDING ============ -->
+<section class="screen active" id="screen-landing" style="padding:0">
+  <div class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow on-dark">Free 4 minute check for traffic professionals</div>
+          <h1>Is your detection estate holding your <em>network</em> back?</h1>
+          <p class="lede">Answer 11 questions about your intersections, your data needs and your maintenance reality. Get an honest readiness verdict, the cost of standing still in your own figures, and a 90 day path to fix it.</p>
+          <div class="hero-cta">
+            <button class="btn" onclick="startCheck()">Start the check</button>
+            <span class="small" style="color:#8B949E">No account. Your figures stay yours.</span>
+          </div>
+          <div class="hero-meta">
+            <div><b>28+ years</b>radar engineering</div>
+            <div><b>18M+ sensors</b>in the field</div>
+            <div><b>150+ cities</b>served worldwide</div>
+          </div>
+        </div>
+        <div class="radar-stage" aria-hidden="true">
+          <svg viewBox="0 0 360 220">
+            <defs>
+              <linearGradient id="beamGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#F07E00" stop-opacity="0"/>
+                <stop offset="100%" stop-color="#F07E00" stop-opacity=".55"/>
+              </linearGradient>
+            </defs>
+            <g>
+              <path d="M 30 180 A 150 150 0 0 1 330 180" fill="none" stroke="#2C333B" stroke-width="1"/>
+              <path d="M 70 180 A 110 110 0 0 1 290 180" fill="none" stroke="#2C333B" stroke-width="1"/>
+              <path d="M 110 180 A 70 70 0 0 1 250 180" fill="none" stroke="#2C333B" stroke-width="1"/>
+              <path d="M 150 180 A 30 30 0 0 1 210 180" fill="none" stroke="#2C333B" stroke-width="1"/>
+              <line x1="30" y1="180" x2="330" y2="180" stroke="#2C333B" stroke-width="1"/>
+              <g class="beam"><path d="M 180 180 L 180 30 A 150 150 0 0 1 255 50 Z" fill="url(#beamGrad)"/></g>
+              <circle cx="180" cy="180" r="6" fill="#F07E00"/>
+              <circle cx="120" cy="120" r="4" fill="#F07E00" opacity=".9"/>
+              <circle cx="230" cy="90" r="4" fill="#C9D0D8" opacity=".7"/>
+              <circle cx="270" cy="140" r="4" fill="#C9D0D8" opacity=".5"/>
+              <text x="128" y="116" fill="#8B949E" font-family="IBM Plex Mono" font-size="9">object · 21 m · 34 km/h</text>
+              <text x="238" y="86" fill="#5B6570" font-family="IBM Plex Mono" font-size="9">cyclist · 96 m</text>
+              <text x="34" y="172" fill="#5B6570" font-family="IBM Plex Mono" font-size="9">300 m advance detection</text>
+            </svg>
+        </div>
+      </div>
+    </div>
+    <div class="hero-strip">
+      <div class="wrap">
+        <span class="mono" style="color:#F07E00">WHAT YOU GET →</span>
+        <span>Readiness verdict with the scale shown</span> ·
+        <span>Cost of standing still, from your figures only</span> ·
+        <span>Honest four technology comparison</span> ·
+        <span>90 day pilot plan</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section class="screen" id="screen-quiz">
+  <div class="wrap" style="max-width:680px">
+    <div class="qcount">
+      <span class="eyebrow" id="qEyebrow"></span>
+      <span class="mono tiny" id="qNum"></span>
+    </div>
+    <div class="qcard">
+      <h2 id="qTitle"></h2>
+      <p class="small" id="qSub"></p>
+      <div class="why" id="qWhy"></div>
+      <div id="qBody"></div>
+      <div class="notsure-box no-print" id="notSureBox" style="display:none">
+        <button class="linklike" id="notSureBtn" onclick="showNotSure()">Not sure? Answer it a different way</button>
+        <div id="notSureOpts" style="display:none;margin-top:12px"></div>
+      </div>
+      <div class="qnav">
+        <button class="linklike" id="backBtn" onclick="prevQ()">← Back</button>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="linklike" id="skipBtn" onclick="skipQ()" style="display:none">Skip this one</button>
+          <button class="btn" id="nextBtn" onclick="nextQ()">Continue</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GATE ============ -->
+<section class="screen" id="screen-gate">
+  <div class="wrap" style="max-width:680px">
+    <div class="teaser">
+      <div class="eyebrow on-dark">Your result is ready</div>
+      <div class="band-name" id="teaserBand"></div>
+      <p id="teaserLine" style="margin-top:6px"></p>
+      <div style="margin-top:18px" class="blurred">
+        <div class="pillar"><div class="pillar-top"><b style="color:#fff">Detection coverage</b><span class="pillar-score" style="color:#fff">■.■ / 10</span></div><div class="bar-rail" style="background:#2C333B"><div class="bar-fill" style="width:64%"></div></div></div>
+        <div class="pillar"><div class="pillar-top"><b style="color:#fff">Reliability</b><span class="pillar-score" style="color:#fff">■.■ / 10</span></div><div class="bar-rail" style="background:#2C333B"><div class="bar-fill" style="width:38%"></div></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:6px">Unlock the full report</h3>
+      <p class="small" style="margin-bottom:16px">The full report includes your scorecard, the cost of standing still calculated from your own figures, an honest technology comparison, your data gaps, and a 90 day plan. We will also send it to your inbox so you can share it with your team.</p>
+      <div class="gate-grid">
+        <div><label for="gFirst">First name</label><input type="text" id="gFirst" autocomplete="given-name"></div>
+        <div><label for="gLast">Last name</label><input type="text" id="gLast" autocomplete="family-name"></div>
+        <div class="full"><label for="gOrg">Organisation</label><input type="text" id="gOrg" autocomplete="organization" placeholder="City council, highway authority, consultancy"></div>
+        <div class="full"><label for="gEmail">Work email</label><input type="email" id="gEmail" autocomplete="email"></div>
+      </div>
+      <p class="tiny" id="gateErr" style="color:var(--red);margin-top:10px;display:none">All four fields are needed so the report reaches the right person.</p>
+      <div style="margin-top:18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <button class="btn" onclick="unlockReport()">Show my full report</button>
+        <span class="tiny">We use these details to send your report and follow up once. Nothing else.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REPORT ============ -->
+<section class="screen" id="screen-report">
+  <div class="wrap">
+    <div id="reportRoot"></div>
+  </div>
+</section>
+
+<div class="footer-note">
+  Built on smartmicro detection engineering · Braunschweig, Germany ·
+  <a href="https://www.smartmicro.com" target="_blank" rel="noopener">smartmicro.com</a><br>
+  <span style="opacity:.7">Demo concept prepared by Navvai</span>
+</div>
+
+<script>
+/* ============================================================
+   Detection Modernisation Check
+   All scoring is deterministic and runs in the browser.
+   The backend only adds narrative polish; every narrative
+   section has a client side fallback so nothing renders blank.
+   ============================================================ */
+
+const CONSULTANT = new URLSearchParams(location.search).get('mode') === 'consultant';
+const CONTACT = '{{ contact_email }}';
+
+function reportSummary(){
+  const R=state.results;
+  return [
+    'Detection Modernisation Check — my result',
+    'Verdict: '+R.verdict.name+' (weakest pillar: '+R.weakest.name+' at '+R.weakest.score+'/10)',
+    R.pillars.map(p=>p.name+' '+p.score+'/10').join(' · '),
+    R.money ? 'Cost of standing still: '+R.money.formula : 'Money questions skipped, so no cost was calculated',
+    'Verdict rule: weakest pillar 7+ Ready to pilot, 4 to 6.9 Plan the pilot, under 4 Foundations first'
+  ].join('\n');
+}
+function emailReport(){
+  track('email_report');
+  location.href='mailto:'+CONTACT+'?subject='+encodeURIComponent('My Detection Modernisation Check result')
+    +'&body='+encodeURIComponent(reportSummary()+'\n\nSending this so the conversation starts with my context already in hand.');
+  const b=$('emailBtn'); if(b){ b.textContent='Opened in your email app ✓'; }
+}
+function waShare(){
+  track('wa_share');
+  window.open('https://wa.me/?text='+encodeURIComponent(reportSummary()),'_blank');
+}
+
+const QUESTIONS = [
+  {
+    id:'role', eyebrow:'About you', title:'What best describes your role?',
+    why:'Why we ask: it sets the language of the report and who the plan is written for.',
+    type:'single',
+    options:[
+      {v:'engineer', t:'Traffic engineer'},
+      {v:'mobility', t:'Mobility or transport department lead'},
+      {v:'highway', t:'Highway authority or operator'},
+      {v:'consultant', t:'Consultant or systems integrator'},
+      {v:'other', t:'Something else'}
+    ]
+  },
+  {
+    id:'region', eyebrow:'About you', title:'Where is your network?',
+    why:'Why we ask: it sets the currency in the money maths and the privacy rules that apply to visual detection.',
+    type:'single',
+    options:[
+      {v:'uk', t:'United Kingdom'},
+      {v:'europe', t:'Europe'},
+      {v:'na', t:'North America'},
+      {v:'me', t:'Middle East'},
+      {v:'other', t:'Somewhere else'}
+    ]
+  },
+  {
+    id:'scale', eyebrow:'Your network', title:'How many signalised intersections do you manage or influence?',
+    why:'Why we ask: it sizes the pilot, the rollout pace and the money maths.',
+    type:'single',
+    options:[
+      {v:'s', t:'Under 25', mid:15},
+      {v:'m', t:'25 to 100', mid:60},
+      {v:'l', t:'100 to 300', mid:200},
+      {v:'xl', t:'Over 300', mid:400}
+    ]
+  },
+  {
+    id:'tech', eyebrow:'Your network', title:'What does most of your detection today?',
+    why:'Why we ask: this is your baseline. The gap between what it can do and what you need is most of this report.',
+    type:'single',
+    options:[
+      {v:'loops', t:'Inductive loops in the carriageway'},
+      {v:'cameras', t:'Cameras'},
+      {v:'radar', t:'Radar'},
+      {v:'mix', t:'A mix of technologies'},
+      {v:'none', t:'Mostly fixed time plans with little detection'}
+    ]
+  },
+  {
+    id:'needs', eyebrow:'Your data', title:'What data does your network actually need?',
+    sub:'Pick everything that applies.',
+    why:'Why we ask: technologies are only good or bad against a stated need. Your picks drive the comparison and the coverage score.',
+    type:'multi',
+    options:[
+      {v:'presence', t:'Presence at the stop line'},
+      {v:'counts', t:'Counts and classification'},
+      {v:'turning', t:'Turning movements and origin destination'},
+      {v:'speed', t:'Speed data'},
+      {v:'vru', t:'Cyclist and pedestrian detection'}
+    ]
+  },
+  {
+    id:'decisions', eyebrow:'Your data', title:'Which decisions is your team making right now?',
+    sub:'Pick everything that applies.',
+    why:'Why we ask: we check each decision against the data you actually collect. Decisions made on partial data are the quiet cost.',
+    type:'multi',
+    options:[
+      {v:'timing', t:'Signal timing changes'},
+      {v:'active', t:'Active travel and cycling investment'},
+      {v:'safety', t:'Road safety schemes'},
+      {v:'redesign', t:'Junction redesign and civil engineering'},
+      {v:'enforce', t:'Enforcement'}
+    ]
+  },
+  {
+    id:'faults', eyebrow:'Your maintenance reality', title:'Roughly how many detector faults or maintenance callouts does your network see in a year?',
+    why:'Why we ask: this feeds your reliability score and the cost of standing still. We only use your figure. Skip it and the money section is hidden rather than invented.',
+    type:'number', placeholder:'e.g. 120', skippable:true,
+    notsure:[
+      {t:'Fewer than 10 a year', v:5},
+      {t:'10 to 50 a year', v:30},
+      {t:'50 to 200 a year', v:125},
+      {t:'More than 200 a year', v:300}
+    ]
+  },
+  {
+    id:'cost', eyebrow:'Your maintenance reality', title:'What does a typical detector repair cost you, including traffic management and any lane closure?',
+    why:'Why we ask: repair invoices rarely include the closure, the crew and the disruption. This number times your fault count is your annual exposure. Your figure, not ours.',
+    type:'number', currency:true, placeholder:'e.g. 3,000', skippable:true,
+    notsure:[
+      {t:'Under 1,000', v:600},
+      {t:'1,000 to 5,000', v:3000},
+      {t:'5,000 to 15,000', v:10000},
+      {t:'Over 15,000', v:20000}
+    ]
+  },
+  {
+    id:'disruption', eyebrow:'Your maintenance reality', title:'How easy is it to close a lane for civil works on your network?',
+    why:'Why we ask: kit that lives in the carriageway turns every fault into roadworks. Your answer scores network resilience and decides whether in ground kit is even viable for you.',
+    type:'single',
+    options:[
+      {v:'easy', t:'Manageable with planning'},
+      {v:'hard', t:'Difficult and costly'},
+      {v:'no', t:'Almost impossible'}
+    ]
+  },
+  {
+    id:'goal', eyebrow:'Your direction', title:'What is the one thing your network needs to achieve in the next 12 months?',
+    sub:'In your own words. Every phase of the plan gets filtered through this.',
+    why:'Why we ask: a plan that is not tied to your objective is our plan, not yours.',
+    type:'text',
+    chips:[
+      'Cut detector maintenance costs',
+      'Get turning counts for a junction redesign',
+      'Measure cycling before we invest in it',
+      'Move towards adaptive signal control'
+    ]
+  },
+  {
+    id:'budget', eyebrow:'Your direction', title:'Where does budget sit right now?',
+    why:'Why we ask: it scores procurement readiness and sets the pace of the plan. There is a right version of this plan for every answer.',
+    type:'single',
+    options:[
+      {v:'funded', t:'Funded project underway'},
+      {v:'next', t:'Budget expected next cycle'},
+      {v:'exploring', t:'Exploring options'}
+    ]
+  }
+];
+
+const state = {
+  idx:0,
+  answers:{},        // id -> {value, label, via}  via: 'direct' | 'notsure' | 'skipped' | 'unknown'
+  results:null,
+  gate:{}
+};
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function track(ev, detail){ try{ fetch('/api/event',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event:ev,detail:detail||''})}); }catch(e){} }
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function currencySymbol(){
+  const r = state.answers.region?.value;
+  if(r==='uk') return '£';
+  if(r==='europe') return '€';
+  return '$';
+}
+function fmtMoney(n){
+  return currencySymbol() + Math.round(n).toLocaleString('en-GB');
+}
+
+/* ---------- flow ---------- */
+function startCheck(){ state.idx=0; track('start'); renderQ(); show('screen-quiz'); }
+
+function renderQ(){
+  const q = QUESTIONS[state.idx];
+  $('qEyebrow').textContent = q.eyebrow;
+  $('qNum').textContent = 'Question ' + (state.idx+1) + ' of ' + QUESTIONS.length;
+  $('stepIndicator').textContent = (state.idx+1) + ' / ' + QUESTIONS.length;
+  $('progressFill').style.width = Math.round((state.idx)/QUESTIONS.length*100) + '%';
+  $('qTitle').textContent = q.title;
+  $('qSub').textContent = q.sub || '';
+  $('qSub').style.display = q.sub ? 'block' : 'none';
+  $('qWhy').textContent = q.why;
+  $('backBtn').style.visibility = state.idx===0 ? 'hidden' : 'visible';
+  $('skipBtn').style.display = q.skippable ? 'inline' : 'none';
+  $('notSureBox').style.display = q.notsure ? 'block' : 'none';
+  $('notSureOpts').style.display='none';
+  $('notSureBtn').style.display='inline';
+
+  const saved = state.answers[q.id];
+  const body = $('qBody');
+  body.innerHTML='';
+
+  if(q.type==='single' || q.type==='multi'){
+    const wrap = document.createElement('div'); wrap.className='opts';
+    q.options.forEach(o=>{
+      const b = document.createElement('button');
+      b.type='button'; b.className='opt';
+      b.innerHTML = '<span class="tick">✓</span><span>'+esc(o.t)+'</span>';
+      const isSel = saved && (q.type==='single' ? saved.value===o.v : (saved.value||[]).includes(o.v));
+      if(isSel) b.classList.add('selected');
+      b.onclick = ()=>{
+        if(q.type==='single'){
+          state.answers[q.id] = {value:o.v, label:o.t, via:'direct'};
+          wrap.querySelectorAll('.opt').forEach(x=>x.classList.remove('selected'));
+          b.classList.add('selected');
+          setTimeout(nextQ, 180);
+        } else {
+          const cur = state.answers[q.id]?.value || [];
+          const next = cur.includes(o.v) ? cur.filter(x=>x!==o.v) : cur.concat(o.v);
+          state.answers[q.id] = {value:next, label:q.options.filter(x=>next.includes(x.v)).map(x=>x.t).join(', '), via:'direct'};
+          b.classList.toggle('selected');
+        }
+      };
+      wrap.appendChild(b);
+    });
+    body.appendChild(wrap);
+  }
+
+  if(q.type==='number'){
+    const row = document.createElement('div'); row.className='numrow';
+    if(q.currency){ const p=document.createElement('span'); p.className='prefix'; p.textContent=currencySymbol(); row.appendChild(p); }
+    const inp = document.createElement('input');
+    inp.type='number'; inp.min='0'; inp.placeholder=q.placeholder||'';
+    inp.id='numInput';
+    if(saved && saved.via!=='skipped' && saved.via!=='unknown') inp.value = saved.value;
+    inp.addEventListener('input', ()=>{ if(inp.value!=='') state.answers[q.id]={value:Number(inp.value), label:(q.currency?currencySymbol():'')+Number(inp.value).toLocaleString('en-GB'), via:'direct'}; });
+    row.appendChild(inp);
+    body.appendChild(row);
+    const hint=document.createElement('p'); hint.className='tiny'; hint.textContent='A rough figure is fine. You can change it later by starting again.';
+    body.appendChild(hint);
+  }
+
+  if(q.type==='text'){
+    const ta = document.createElement('textarea');
+    ta.id='textInput'; ta.placeholder='Type it as you would say it to a colleague';
+    if(saved) ta.value = saved.value;
+    ta.addEventListener('input', ()=>{ state.answers[q.id]={value:ta.value.trim(), label:ta.value.trim(), via:'direct'}; });
+    body.appendChild(ta);
+    if(q.chips){
+      const cw=document.createElement('div'); cw.className='chips';
+      q.chips.forEach(c=>{
+        const ch=document.createElement('button'); ch.type='button'; ch.className='chip'; ch.textContent=c;
+        ch.onclick=()=>{ ta.value=c; state.answers[q.id]={value:c,label:c,via:'direct'}; };
+        cw.appendChild(ch);
+      });
+      body.appendChild(cw);
+    }
+  }
+}
+
+function showNotSure(){
+  const q = QUESTIONS[state.idx];
+  const box = $('notSureOpts');
+  $('notSureBtn').style.display='none';
+  box.style.display='block';
+  box.innerHTML = '<p class="small" style="margin-bottom:10px">Pick the band that feels closest. We will use the middle of it and say so in the report.</p>';
+  const wrap=document.createElement('div'); wrap.className='opts';
+  q.notsure.forEach(o=>{
+    const b=document.createElement('button'); b.type='button'; b.className='opt';
+    b.innerHTML='<span class="tick">✓</span><span>'+esc(o.t)+'</span>';
+    b.onclick=()=>{
+      state.answers[q.id]={value:o.v,label:o.t+' (band estimate)',via:'notsure'};
+      setTimeout(nextQ,180);
+    };
+    wrap.appendChild(b);
+  });
+  box.appendChild(wrap);
+  const still=document.createElement('button'); still.type='button'; still.className='linklike'; still.style.marginTop='10px';
+  still.textContent='Still not sure. Record it honestly as a gap';
+  still.onclick=()=>{ state.answers[q.id]={value:null,label:'Not known',via:'unknown'}; nextQ(); };
+  box.appendChild(still);
+}
+
+function skipQ(){
+  const q=QUESTIONS[state.idx];
+  state.answers[q.id]={value:null,label:'Skipped',via:'skipped'};
+  nextQ();
+}
+
+function nextQ(){
+  const q=QUESTIONS[state.idx];
+  const a=state.answers[q.id];
+  if(!a || (q.type==='multi' && (!a.value || a.value.length===0)) || (q.type==='text' && !a.value)){
+    if(!q.skippable){
+      // gentle nudge: shake the card
+      const card=document.querySelector('.qcard');
+      card.style.borderColor='var(--red)';
+      setTimeout(()=>card.style.borderColor='',600);
+      return;
+    }
+    state.answers[q.id]={value:null,label:'Skipped',via:'skipped'};
+  }
+  if(state.idx < QUESTIONS.length-1){ state.idx++; renderQ(); }
+  else finishQuiz();
+}
+function prevQ(){ if(state.idx>0){ state.idx--; renderQ(); } }
+
+function finishQuiz(){
+  state.results = computeResults();
+  track('quiz_complete', state.results.verdict.name);
+  if(CONSULTANT){ buildReport(); show('screen-report'); requestNarrative(); return; }
+  $('teaserBand').textContent = state.results.verdict.name;
+  $('teaserLine').textContent = state.results.verdict.teaser;
+  show('screen-gate');
+}
+
+function unlockReport(){
+  const g={
+    first_name:$('gFirst').value.trim(),
+    last_name:$('gLast').value.trim(),
+    organisation:$('gOrg').value.trim(),
+    email:$('gEmail').value.trim()
+  };
+  if(!g.first_name||!g.last_name||!g.organisation||!g.email||!g.email.includes('@')){
+    $('gateErr').style.display='block'; return;
+  }
+  state.gate=g;
+  try{
+    fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      ...g,
+      role: state.answers.role?.label||'',
+      region: state.answers.region?.label||'',
+      verdict: state.results.verdict.name,
+      headline: state.results.headline
+    })});
+  }catch(e){}
+  track('gate_unlock');
+  buildReport();
+  show('screen-report');
+  requestNarrative();
+}
+
+/* ============================================================
+   SCORING — deterministic, every rule printed in the report
+   ============================================================ */
+const NEED_LABELS = {presence:'Presence at the stop line', counts:'Counts and classification', turning:'Turning movements and origin destination', speed:'Speed data', vru:'Cyclist and pedestrian detection'};
+
+// What each incumbent technology reliably provides today, standalone.
+const CAPABILITY = {
+  loops:   ['presence'],
+  cameras: ['presence','counts','vru'],
+  radar:   ['presence','counts','speed'],
+  mix:     ['presence','counts'],
+  none:    []
+};
+
+// Honest technology comparison: score per need, out of 10.
+const TECH_MATRIX = {
+  loops:  {presence:9, counts:2, turning:1, speed:3, vru:1,  name:'Inductive loops'},
+  cameras:{presence:7, counts:9, turning:6, speed:5, vru:8,  name:'Cameras'},
+  lidar:  {presence:7, counts:8, turning:7, speed:7, vru:8,  name:'Lidar'},
+  radar:  {presence:9, counts:8, turning:8, speed:10, vru:7, name:'Radar'}
+};
+const TECH_NOTES = {
+  loops:'Reliable at a single point and cheap as a part. The cost is that it lives in the carriageway, so installation and every fault mean civil works.',
+  cameras:'The strongest visual classifier. If you need the image itself, nothing else does that job. The trade offs are range of about 50 metres, lens cleaning, low light, and privacy rules on visual data.',
+  lidar:'Detailed 3D mapping at short to medium range. Weather sensitive and the most expensive per point of data in most traffic deployments.',
+  radar:'Longest range at around 300 metres of advance detection and the most accurate speed measurement. Not a visual sensor, so no image and no privacy exposure. Turning movements need sensor fusion at the junction.'
+};
+
+// Decisions and the data they rest on.
+const DECISION_NEEDS = {
+  timing:  {label:'Signal timing changes', needs:['presence','counts']},
+  active:  {label:'Active travel and cycling investment', needs:['vru']},
+  safety:  {label:'Road safety schemes', needs:['speed','vru']},
+  redesign:{label:'Junction redesign and civil engineering', needs:['turning']},
+  enforce: {label:'Enforcement', needs:['speed']}
+};
+
+function clamp(n,lo,hi){ return Math.max(lo, Math.min(hi, n)); }
+function r1(n){ return Math.round(n*10)/10; }
+
+function computeResults(){
+  const a = state.answers;
+  const tech = a.tech?.value || 'none';
+  const needs = a.needs?.value || [];
+  const decisions = a.decisions?.value || [];
+  const scaleOpt = QUESTIONS.find(q=>q.id==='scale').options.find(o=>o.v===a.scale?.value);
+  const scaleMid = scaleOpt ? scaleOpt.mid : 60;
+  const faults = (a.faults?.via==='direct'||a.faults?.via==='notsure') ? a.faults.value : null;
+  const cost = (a.cost?.via==='direct'||a.cost?.via==='notsure') ? a.cost.value : null;
+  const disruption = a.disruption?.value || 'easy';
+  const budget = a.budget?.value || 'exploring';
+  const region = a.region?.value || 'other';
+
+  /* ---- Pillar 1: Detection coverage ---- */
+  const have = CAPABILITY[tech] || [];
+  const unmet = needs.filter(n=>!have.includes(n));
+  const coverage = r1(clamp(10 - 2.2*unmet.length, 1, 10));
+
+  /* ---- Pillar 2: Reliability ---- */
+  const relBase = {loops:4, cameras:5.5, radar:8, mix:5, none:6}[tech];
+  let reliability = relBase; let relNote='based on what your technology typically delivers';
+  if(faults!==null && faults>=0){
+    const ratio = faults/scaleMid;
+    if(ratio>2) { reliability -= 2; relNote='your fault count is high for your network size, more than 2 callouts per intersection per year'; }
+    else if(ratio>=1) { reliability -= 1; relNote='your fault count works out at roughly one callout per intersection per year'; }
+    else if(ratio<0.3) { reliability += 1; relNote='your fault count is low for your network size, under 0.3 callouts per intersection per year'; }
+    else { relNote='your fault count sits in the typical range for your network size'; }
+  }
+  reliability = r1(clamp(reliability,1,10));
+
+  /* ---- Pillar 3: Network resilience ---- */
+  let resilience = {easy:7.5, hard:4.5, no:2.5}[disruption];
+  if(tech!=='loops') resilience += 1.5;
+  resilience = r1(clamp(resilience,1,10));
+
+  /* ---- Pillar 4: Procurement readiness ---- */
+  let procurement = {funded:8.5, next:6, exploring:3.5}[budget];
+  if(scaleMid>=100) procurement += 0.5;
+  procurement = r1(clamp(procurement,1,10));
+
+  const pillars = [
+    {key:'coverage', name:'Detection coverage', score:coverage,
+     def:'Whether your current detection can supply the data you told us you need. Each unmet need costs 2.2 points from 10.',
+     note: unmet.length ? ('Unmet today: ' + unmet.map(n=>NEED_LABELS[n]).join(', ')) : 'Every need you selected is covered by your current technology.'},
+    {key:'reliability', name:'Reliability', score:reliability,
+     def:'How often your detection fails and needs a callout. Starts from what your technology typically delivers, adjusted by your own fault figure.',
+     note: relNote.charAt(0).toUpperCase()+relNote.slice(1) + '.'},
+    {key:'resilience', name:'Network resilience', score:resilience,
+     def:'What a detector fault costs you in disruption. Driven by how hard lane closures are on your network and whether your kit lives in the carriageway.',
+     note: tech==='loops' ? 'In carriageway kit plus your lane closure answer means every fault risks becoming roadworks.' : 'Your detection is mostly above ground, which keeps faults out of the carriageway.'},
+    {key:'procurement', name:'Procurement readiness', score:procurement,
+     def:'Whether budget and process are in place to act on what this report finds. Scored from your budget stage, with a small uplift for larger established programmes.',
+     note: budget==='funded' ? 'A funded project underway means the plan below can start on the pilot immediately.' : budget==='next' ? 'Budget next cycle means the plan below is paced to arrive with evidence exactly when budget lands.' : 'Exploring options means the plan below is paced around building the business case first.'}
+  ];
+
+  const weakest = pillars.reduce((w,p)=>p.score<w.score?p:w, pillars[0]);
+  const avg = r1(pillars.reduce((s,p)=>s+p.score,0)/4);
+
+  let verdict;
+  if(weakest.score>=7) verdict={name:'Ready to pilot', cls:'green', teaser:'Your weakest pillar clears 7 out of 10. The full report shows why, and where the fastest win sits.',
+    who:'Networks here have coverage, reliability and budget broadly in place. The pilot is about proving value fast, not fixing foundations.',
+    first:'Before anything else: pick the one junction where your 12 month goal is most visible and baseline it.'};
+  else if(weakest.score>=4) verdict={name:'Plan the pilot', cls:'amber', teaser:'One pillar is holding you back. The full report names it and shows the distance to the next band.',
+    who:'Most networks land here. Something real works against you, usually maintenance burden or budget timing, but a scoped 90 day pilot is entirely realistic.',
+    first:'Before anything else: fix the weakest pillar named below. It is the reason you are not in the top band.'};
+  else verdict={name:'Foundations first', cls:'red', teaser:'An honest result: one pillar scores below 4, and a pilot now would stall. The full report shows what to fix first.',
+    who:'Networks here usually lack either any real detection baseline or any budget path. The right move is groundwork, not procurement, and this report says so plainly.',
+    first:'Before anything else: get the weakest pillar above 4. Everything else in this report waits for that.'};
+
+  const distance = weakest.score>=7 ? null : r1((weakest.score>=4?7:4) - weakest.score);
+
+  /* ---- Money: only their figures ---- */
+  let money=null;
+  if(faults!==null && cost!==null && faults>0 && cost>0){
+    const annual = faults*cost;
+    money={
+      faults, cost, annual,
+      monthly: annual/12,
+      formula: `${faults} callouts a year × ${fmtMoney(cost)} per repair = ${fmtMoney(annual)} a year, or ${fmtMoney(annual/12)} a month`,
+      assumptions:'The projection assumes the pilot runs for the first 3 months with no change, then above ground detection replaces in carriageway kit on 40% of the network by month 12, and converted sites see 70% fewer detector callouts. Both figures are deliberately conservative. 40% × 70% means total exposure falls to 72% of today by month 12.',
+      estimated: (a.faults?.via==='notsure'||a.cost?.via==='notsure')
+    };
+  }
+
+  /* ---- Technology comparison against their needs ---- */
+  let techRank=null;
+  const rankNeeds = needs.length ? needs : ['presence','counts'];
+  techRank = Object.keys(TECH_MATRIX).map(k=>{
+    const m=TECH_MATRIX[k];
+    let subs = rankNeeds.map(n=>({need:NEED_LABELS[n], score:m[n]}));
+    let total = subs.reduce((s,x)=>s+x.score,0)/subs.length;
+    const mods=[];
+    if(k==='loops' && (disruption==='hard'||disruption==='no')){ total-=3; mods.push('minus 3: lane closures are ' + (disruption==='no'?'almost impossible':'difficult') + ' on your network and loops need them for installation and every repair'); }
+    if(k==='cameras' && (region==='uk'||region==='europe')){ total-=2; mods.push('minus 2: visual detection carries personal data obligations in your region'); }
+    if(k==='cameras'){ total-=0.5; mods.push('minus 0.5: low light and lens maintenance'); }
+    if(k==='lidar'){ total-=0.5; mods.push('minus 0.5: weather sensitivity'); }
+    return {key:k, name:m.name, note:TECH_NOTES[k], subs, mods, total:r1(clamp(total,0,10))};
+  }).sort((x,y)=>y.total-x.total);
+
+  /* ---- Data gaps: decisions vs data ---- */
+  const gaps = decisions.map(d=>{
+    const dn=DECISION_NEEDS[d];
+    const missing = dn.needs.filter(n=>!have.includes(n));
+    const status = missing.length===0 ? 'covered' : (missing.length<dn.needs.length ? 'partial' : 'blind');
+    return {label:dn.label, needs:dn.needs.map(n=>NEED_LABELS[n]), missing:missing.map(n=>NEED_LABELS[n]), status};
+  });
+
+  /* ---- Privacy exposure ---- */
+  const usesCameras = tech==='cameras' || tech==='mix';
+  let privacy;
+  if(usesCameras && (region==='uk'||region==='europe')) privacy={level:'High', cls:'red', text:'Your estate includes cameras and your network sits under UK GDPR or EU GDPR. Images of people and number plates are personal data, which brings lawful basis, retention, signage and access request obligations to every camera you operate. This is a running compliance cost, not a one off.'};
+  else if(usesCameras) privacy={level:'Medium', cls:'amber', text:'Your estate includes cameras. Privacy rules in your region are lighter than Europe, but visual data still carries retention and disclosure questions worth having answers to before they are asked.'};
+  else privacy={level:'Low', cls:'green', text:'Your detection is non visual. Radar and loops sense objects, not images, so there is no personal data captured at the roadside and no privacy caseload attached to your detection estate.'};
+
+  /* ---- Painkiller or vitamin ---- */
+  const blindCount = gaps.filter(g=>g.status!=='covered').length;
+  let pain;
+  if(money && money.annual>0) pain={label:'Painkiller', why:'This fixes an active cost: '+fmtMoney(money.annual)+' a year in maintenance exposure by your own figures. Painkillers get funded and adopted; vitamins get postponed.'};
+  else if(blindCount>0) pain={label:'Painkiller', why:'Live decisions on your desk are running on partial or missing data right now. That is an active cost even before any money is counted. Painkillers get funded and adopted; vitamins get postponed.'};
+  else pain={label:'Vitamin', why:'Nothing here is actively bleeding. This is about extending a working estate, and the plan below is paced accordingly rather than dressed up as an emergency.'};
+
+  /* ---- Build size ---- */
+  let effort;
+  if(needs.includes('turning')) effort={label:'Medium build', why:'The pilot needs sensor fusion at the junction, four radars feeding a COM HUB Relay, to capture the turning movements you asked for, on top of the above ground install.'};
+  else if(tech==='none') effort={label:'Medium build', why:'Starting from little detection means the pilot also has to establish the baseline data practices, not just mount sensors.'};
+  else effort={label:'Small build', why:'The pilot is above ground sensors at one junction with no road cutting, run alongside what you already have.'};
+
+  /* ---- Estate sprawl check ---- */
+  let sprawl;
+  if(tech==='mix') sprawl={level:'HIGH RISK', cls:'red', text:'You already run a mix of detection technologies, which in practice usually means one vendor system per scheme, each with its own interface and data format, and no single view of the network. Adding another standalone sensor would be another bolted on limb. The fix is the opposite move: fusion at the junction, the COM HUB approach, so new sensors feed one view instead of opening another silo.'};
+  else if(tech==='cameras'||tech==='loops') sprawl={level:'MEDIUM RISK', cls:'amber', text:'A single technology today means your estate is still coherent. The risk arrives with the next scheme that needs data your current sensors cannot supply, because the easy path is bolting on a different system with its own silo. The pilot below is designed to avoid exactly that: fused detection that replaces capability rather than stacking alongside it.'};
+  else sprawl={level:'LOW RISK', cls:'green', text:'Your estate is coherent and the pilot extends it rather than adding a parallel system. Keep it that way: the standard worth holding is that every new sensor feeds the same view.'};
+
+  const readyPct = Math.round(avg*10);
+
+  const headline = `${verdict.name} · weakest pillar ${weakest.name} at ${weakest.score}/10`;
+
+  return {pillars, weakest, avg, verdict, distance, money, techRank, gaps, privacy, unmet, tech, needs, decisions, scaleMid, region, headline, pain, effort, sprawl, readyPct};
+}
+
+/* ============================================================
+   FALLBACK NARRATIVE — always rendered first, replaced by the
+   backend version only if it arrives. Nothing renders blank.
+   ============================================================ */
+function fallbackNarrative(){
+  const R=state.results; const a=state.answers;
+  const goal=a.goal?.value || 'the objective you set';
+  const exec = `Your network runs on ${a.tech?.label?.toLowerCase()||'its current detection'} and your verdict is ${R.verdict.name}, because your weakest pillar, ${R.weakest.name}, scores ${R.weakest.score} out of 10 and the verdict always follows the weakest pillar. Against your 12 month goal, "${goal}", the plan below starts with a single junction so the first evidence arrives in weeks, not budget cycles. ${R.verdict.first}`;
+  let blind;
+  if(R.tech==='cameras' && (R.region==='uk'||R.region==='europe')) blind='The likely blind spot is that your camera estate is a privacy caseload as well as a detection tool, and that cost sits in nobody\'s detection budget. Every image of a person or plate is personal data you are accountable for.';
+  else if(R.tech==='loops' && (a.disruption?.value==='hard'||a.disruption?.value==='no')) blind='The likely blind spot is that on your network every loop fault is really a roadworks project, so the true cost per fault is the closure, not the part. Repair invoices almost never show that.';
+  else if(R.unmet.includes('turning')) blind='The likely blind spot is that junction decisions are being made without turning movement data, so redesigns are argued from counts that cannot say where vehicles actually go. That gap is invisible until a scheme underperforms.';
+  else if(R.needs.includes('vru') && R.unmet.includes('vru')) blind='The likely blind spot is investing in active travel without measuring cyclists and pedestrians, which means the case for the next scheme rests on the data you are not collecting.';
+  else blind='The likely blind spot is that your fault history lives in maintenance logs rather than in any business case, so the cost of standing still has never been added up in one place. This report just did that with your own figures.';
+  const phases=[
+    `Weeks 1 to 2 are about your goal, "${goal}": pick the one junction where it is most visible and pull 12 months of fault logs so the baseline is yours, not ours.`,
+    `Weeks 3 to 8 attack your weakest pillar, ${R.weakest.name}, directly: the pilot installs above ground, with no road cutting, and runs alongside what you have so nothing is bet on it.`,
+    `Weeks 9 to 12 turn the pilot into your evidence: pilot data against your baseline, in your figures, timed for your budget stage of "${a.budget?.label?.toLowerCase()||'your current budget position'}".`
+  ];
+  return {exec_summary:exec, blind_spot:blind, phase_notes:phases};
+}
+
+async function requestNarrative(){
+  const fb=fallbackNarrative();
+  applyNarrative(fb);
+  try{
+    const ctx={
+      role:state.answers.role?.label, region:state.answers.region?.label,
+      network_size:state.answers.scale?.label, current_tech:state.answers.tech?.label,
+      needs:state.answers.needs?.label, decisions:state.answers.decisions?.label,
+      faults:state.answers.faults?.label, repair_cost:state.answers.cost?.label,
+      lane_closures:state.answers.disruption?.label, goal:state.answers.goal?.value,
+      budget:state.answers.budget?.label
+    };
+    const res=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({context:ctx,results:{
+        pillars:state.results.pillars.map(p=>({name:p.name,score:p.score})),
+        weakest:state.results.weakest.name, verdict:state.results.verdict.name,
+        money: state.results.money ? state.results.money.formula : 'not supplied, money sections hidden',
+        unmet_needs: state.results.unmet
+      }})});
+    const data=await res.json();
+    if(data.ok && data.narrative && data.narrative.exec_summary) applyNarrative(data.narrative);
+  }catch(e){ /* fallback already on screen */ }
+}
+function applyNarrative(n){
+  if($('nExec')) $('nExec').textContent=n.exec_summary;
+  if($('nBlind')) $('nBlind').textContent=n.blind_spot;
+  (n.phase_notes||[]).forEach((t,i)=>{ const el=$('nPhase'+i); if(el) el.textContent=t; });
+}
+
+/* ============================================================
+   REPORT RENDER — six numbered parts with bridges
+   ============================================================ */
+function bandCls(s){ return s>=7?'good':(s>=4?'ok':'weak'); }
+
+function chartSVG(money){
+  // Two lines over 12 months: do nothing (flat) vs the plan (flat to m3, linear to 72% at m12)
+  const W=640,H=240,padL=70,padR=16,padT=18,padB=34;
+  const m0=money.monthly;
+  const planAt=m=> m<=3 ? m0 : m0*(1-((m-3)/9)*0.28);
+  const maxY=m0*1.15;
+  const x=m=> padL+(W-padL-padR)*(m/12);
+  const y=v=> padT+(H-padT-padB)*(1-v/maxY);
+  let doNothing='',plan='';
+  for(let m=0;m<=12;m++){ doNothing+=(m?'L':'M')+x(m)+' '+y(m0)+' '; plan+=(m?'L':'M')+x(m)+' '+y(planAt(m))+' '; }
+  const gridY=[0,0.25,0.5,0.75,1].map(f=>{
+    const v=maxY*f; return `<line x1="${padL}" y1="${y(v)}" x2="${W-padR}" y2="${y(v)}" stroke="#E1E4E2"/><text x="${padL-8}" y="${y(v)+4}" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#6A737D">${fmtMoney(v)}</text>`;
+  }).join('');
+  const gridX=[0,3,6,9,12].map(m=>`<text x="${x(m)}" y="${H-10}" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6A737D">${m===0?'Today':'Month '+m}</text>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" role="img" aria-label="Monthly maintenance exposure over 12 months, doing nothing versus the plan">
+    ${gridY}${gridX}
+    <path d="${doNothing}" fill="none" stroke="#CE4A4A" stroke-width="2.5" stroke-dasharray="6 5"/>
+    <path d="${plan}" fill="none" stroke="#1F9D5B" stroke-width="2.5"/>
+    <text x="${W-padR}" y="${y(m0)-8}" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#CE4A4A">Do nothing</text>
+    <text x="${W-padR}" y="${y(planAt(12))+16}" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#1F9D5B">With the plan</text>
+  </svg>`;
+}
+
+function verdictScale(R){
+  const w=R.weakest.score;
+  const pct=Math.min(99,Math.max(1,(w/10)*100));
+  return `
+  <div class="scale">
+    <div class="you-marker"><div class="you-pin" style="left:${pct}%">YOU · ${R.weakest.name} ${w}/10</div></div>
+    <div class="scale-bar">
+      <div style="width:40%;background:#7A3535"></div>
+      <div style="width:30%;background:#8A6C1F"></div>
+      <div style="width:30%;background:#1F6B43"></div>
+    </div>
+    <div class="scale-labels">
+      <div style="width:40%">Foundations first<br>weakest pillar under 4</div>
+      <div style="width:30%">Plan the pilot<br>weakest pillar 4 to 6.9</div>
+      <div style="width:30%">Ready to pilot<br>weakest pillar 7 or above</div>
+    </div>
+    <div class="rule-line">RULE · your verdict always follows your weakest pillar, never the average. Average across the four pillars: ${R.avg}/10. A 10 does not exist here; the gap to 10 is the readiness gap the plan closes.</div>
+  </div>`;
+}
+
+function buildReport(){
+  const R=state.results; const a=state.answers;
+  const first = state.gate.first_name ? esc(state.gate.first_name) : '';
+  const goal = a.goal?.value || '';
+
+  /* ---- product map rows, filtered to what their answers flagged ---- */
+  const mapRows=[];
+  if(R.tech==='loops' || R.pillars.find(p=>p.key==='reliability').score<6 || a.disruption?.value!=='easy')
+    mapRows.push({pain:'Detector faults that turn into roadworks', fix:'<b>TRUGRD and TOPGRD traffic sensors</b>: above ground installation with no road cutting, around a 10 year design life, and up to 32 virtual zones per sensor doing the job of in carriageway loops from a pole.', flag:'Reliability, Network resilience', cs:true});
+  if(R.needs.includes('turning'))
+    mapRows.push({pain:'No turning movements or origin destination data', fix:'<b>COM HUB Relay</b>: an edge device that fuses up to four radars at a junction into one seamless track, so vehicles are followed through the turn and you get turning counts and origin destination without a camera.', flag:'Detection coverage'});
+  if(R.needs.includes('vru'))
+    mapRows.push({pain:'Cyclists and pedestrians going unmeasured', fix:'<b>VRU detection and Hybrid AI Tracking</b>: radar led detection of vulnerable road users, with a camera enhanced option where classification detail matters and privacy rules allow it.', flag:'Detection coverage'});
+  if(R.needs.includes('speed') || R.decisions.includes('enforce'))
+    mapRows.push({pain:'Speed data and enforcement', fix:'<b>Enforcement radar line</b>: radar is the most accurate speed measurement of the four technologies, which is why enforcement is built on it.', flag:'Detection coverage'});
+  if(R.privacy.level!=='Low')
+    mapRows.push({pain:'Privacy exposure from visual detection', fix:'<b>Non visual radar detection</b>: radar senses objects, positions and speeds without capturing an image, so the data carries no personal data obligations at the roadside.', flag:'Exposure'});
+  if(mapRows.length===0)
+    mapRows.push({pain:'Extending a working estate', fix:'<b>Product Selection Guide</b>: your pillars are broadly healthy, so the map here is about matching the right sensor to the next junction rather than fixing a problem.', flag:'Detection coverage'});
+
+  /* ---- data gaps table ---- */
+  const gapRows = R.gaps.length ? R.gaps.map(g=>{
+    const badge = g.status==='covered' ? '<span class="badge green">COVERED</span>' : g.status==='partial' ? '<span class="badge amber">PARTIAL</span>' : '<span class="badge red">BLIND</span>';
+    const missing = g.missing.length ? 'Missing: '+esc(g.missing.join(', ')) : 'All required data is collected.';
+    return `<tr><td><b>${esc(g.label)}</b></td><td>${esc(g.needs.join(', '))}</td><td>${missing}</td><td>${badge}</td></tr>`;
+  }).join('') : `<tr><td colspan="4" class="small">You did not select any live decisions, so there is nothing to check data against. That in itself is worth a conversation: detection investment should follow decisions.</td></tr>`;
+
+  /* ---- tech comparison ---- */
+  const techWin=R.techRank[0];
+  const techRows=R.techRank.map((t,i)=>{
+    const subs=t.subs.map(s=>`${esc(s.need)} ${s.score}/10`).join(' · ');
+    const mods=t.mods.length?`<div class="tiny" style="margin-top:4px">${t.mods.map(esc).join('; ')}</div>`:'';
+    return `<tr><td><b>${i+1}. ${esc(t.name)}</b><div class="tiny mono" style="margin-top:2px">${t.total}/10 against your needs</div></td><td>${esc(t.note)}<div class="tiny mono" style="margin-top:6px">${subs}</div>${mods}</td></tr>`;
+  }).join('');
+  const honesty = R.techRank.find(t=>t.key==='cameras' && t.subs.some(s=>s.score>=9))
+    ? 'Being straight with you: on pure classification detail, cameras score highest. If you need the image itself, radar is not the answer to that need. The ranking above weighs everything you selected together, with your constraints applied.'
+    : 'The scores above are per need, against what you selected, with your own constraints applied as printed deductions. A different set of needs would produce a different ranking, which is the point.';
+
+  /* ---- trace rows ---- */
+  const traceMap={
+    role:'Set who this report is written for and the language of the plan.',
+    region:'Set the currency in the money maths and the privacy rules applied in Part 3.',
+    scale:'Sized the money maths per intersection and paced the rollout in Part 5.',
+    tech:'Set the capability baseline that every need in Part 1 was checked against.',
+    needs:'Drove the Detection coverage score and the technology ranking in Part 4.',
+    decisions:'Built the decisions versus data table in Part 3.',
+    faults:'Adjusted the Reliability score and supplied half the money formula in Part 2.',
+    cost:'Supplied the other half of the money formula in Part 2.',
+    disruption:'Drove the Network resilience score and applied a printed deduction to loops in Part 4.',
+    goal:'Quoted at the top of Part 5. Every phase is filtered through it.',
+    budget:'Drove the Procurement readiness score and set the pace of the plan.'
+  };
+  const traceRows=QUESTIONS.map(q=>{
+    const ans=state.answers[q.id];
+    let val=ans?esc(ans.label):'—';
+    let effect=traceMap[q.id];
+    if(ans && (ans.via==='skipped'||ans.via==='unknown')){
+      effect = (q.id==='faults'||q.id==='cost') ? 'Not supplied, so the money section in Part 2 is hidden rather than invented.' : 'Recorded honestly as a gap.';
+    }
+    return `<tr class="trace-row"><td>“${val}”</td><td>${effect}</td></tr>`;
+  }).join('');
+
+  /* ---- money block ---- */
+  let moneyBlock;
+  if(R.money){
+    moneyBlock=`
+      <p class="section-explain">Every number below comes from two figures you gave us. We have not added anything of our own.</p>
+      <div style="display:flex;gap:28px;flex-wrap:wrap;align-items:baseline">
+        <div><div class="bignum">${fmtMoney(R.money.annual)}</div><div class="small">your annual detector maintenance exposure</div></div>
+        <div><div class="bignum">${fmtMoney(R.money.monthly)}</div><div class="small">every month, whether or not anything changes</div></div>
+      </div>
+      <div class="formula">${esc(R.money.formula)}${R.money.estimated?'<br>One or both figures came from a band you picked rather than an exact number, so treat this as an order of magnitude.':''}</div>
+      <div class="chart-wrap">${chartSVG(R.money)}</div>
+      <p class="chart-caption"><b>How to read this chart:</b> the dashed red line is your monthly exposure if nothing changes. The green line is the plan in Part 5. ${esc(R.money.assumptions)}</p>
+      <p class="tiny" style="margin-top:8px">These are estimates built from your own figures, not guarantees. The pilot in Part 5 exists precisely to replace this projection with your measured numbers.</p>`;
+  } else {
+    moneyBlock=`
+      <p class="section-explain">You skipped one or both money questions, so this section is honest about that instead of inventing figures.</p>
+      <div class="gap-note"><b>The gap, recorded:</b> without your fault count and cost per repair, the cost of standing still cannot be calculated. Two things worth pulling before the conversation in Part 5: twelve months of detector fault logs, and one real repair invoice with traffic management included. Phase 1 of the plan gathers exactly these.</div>`;
+  }
+
+  /* ---- assemble ---- */
+  $('reportRoot').innerHTML=`
+  <div style="padding-top:8px">
+    <div class="eyebrow">Detection Modernisation Check${state.gate.organisation?' · '+esc(state.gate.organisation):''}</div>
+    <h1 style="font-size:2rem;margin:8px 0 6px">${first?first+', h':'H'}ere is where your network stands</h1>
+    <p class="small no-print" id="sentLine">${CONSULTANT?'Consultant mode: no email gate, scores recompute live from the answers.':'A copy of this report is on its way to '+esc(state.gate.email)+'. Forward it freely; the glossary at the end is written for people who never saw these questions.'}</p>
+    <div class="howfits">
+      <div><b>1 · Verdict</b>where you stand and why</div>
+      <div><b>2 · Cost</b>standing still, in your figures</div>
+      <div><b>3 · Exposure</b>data gaps and privacy</div>
+      <div><b>4 · Map</b>honest tech comparison and fixes</div>
+      <div><b>5 · Plan</b>90 days, goal first</div>
+      <div><b>6 · Receipts</b>where every answer went</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:22px">
+    <div class="eyebrow" style="margin-bottom:10px">The verdict in 15 seconds</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <span class="badge ${R.pain.label==='Painkiller'?'red':'grey'}">${R.pain.label.toUpperCase()}</span>
+      ${R.money?'<span class="badge amber">COSTING YOU ~'+fmtMoney(R.money.monthly)+'/MO</span>':'<span class="badge grey">COST NOT YET MEASURED</span>'}
+      <span class="badge ${R.verdict.cls}">${R.readyPct}% READY</span>
+      <span class="badge ${R.verdict.cls}">${R.verdict.name.toUpperCase()}</span>
+      <span class="badge grey">${R.effort.label.toUpperCase()}</span>
+    </div>
+    <p class="tiny" style="margin-top:12px">Reading the badges: the category is whether this fixes an active cost or extends a working estate · the monthly figure is your own maintenance exposure${R.money?'':', not shown because you skipped the money questions'} · % ready is the average of the four pillar scores in Part 1 · the verdict follows the weakest pillar, never the average · the build size is the rough pilot effort. Every one is unpacked below.</p>
+    <p class="small" style="margin-top:10px"><b style="color:var(--ink)">${R.pain.label}.</b> ${esc(R.pain.why)}</p>
+    <p class="small" style="margin-top:6px"><b style="color:var(--ink)">${R.effort.label}.</b> ${esc(R.effort.why)}</p>
+  </div>
+
+  <!-- PART 1 -->
+  <div style="margin-top:26px" class="part-tag"><span class="part-num">PART 1</span><span class="eyebrow">The verdict</span></div>
+  <div class="verdict-hero">
+    <div class="eyebrow on-dark">Verdict</div>
+    <h2>${R.verdict.name}</h2>
+    <p id="nExec"></p>
+    ${verdictScale(R)}
+    <p style="margin-top:16px;font-size:.92rem">${esc(R.verdict.who)}${R.distance!==null?' You are <b style="color:#fff">'+R.distance+' points</b> on your weakest pillar from the next band.':''}</p>
+    <p style="margin-top:10px;font-size:.95rem;color:#fff"><b>${esc(R.verdict.first)}</b></p>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:4px">The four pillar scorecard</h3>
+    <p class="section-explain">Each pillar is scored out of 10 and the rule under each bar says exactly how. The verdict follows the lowest bar.</p>
+    ${R.pillars.map(p=>`
+      <div class="pillar">
+        <div class="pillar-top"><b>${p.name}${p.key===R.weakest.key?' · <span class="badge red">WEAKEST</span>':''}</b><span class="pillar-score">${p.score} / 10</span></div>
+        <div class="bar-rail"><div class="bar-fill ${bandCls(p.score)}" style="width:${p.score*10}%"></div></div>
+        <div class="small">${esc(p.def)}</div>
+        <div class="small" style="color:var(--ink)">${esc(p.note)}</div>
+      </div>`).join('')}
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:4px">Why this is within reach</h3>
+    <p>You have already sized the problem yourself${R.money?': '+R.money.faults+' callouts a year at '+fmtMoney(R.money.cost)+' each, in your figures, not ours':goal?' and named the goal it blocks':''}. The pilot in Part 5 is one junction, above ground, run alongside what you have, so proving it costs one junction's worth of patience rather than a network's worth of budget.${R.distance!==null?' And the distance is short: your weakest pillar is '+R.distance+' points from the next band, which is a gap the plan is built to close, not a wall.':' Your weakest pillar already clears the top band, so the plan is about speed, not repair.'}</p>
+  </div>
+  <p class="bridge">The verdict says where you stand. Part 2 says what standing still costs, using only the figures you gave us.</p>
+
+  <!-- PART 2 -->
+  <div class="part-tag"><span class="part-num">PART 2</span><span class="eyebrow">The cost of standing still</span></div>
+  <div class="card">${moneyBlock}</div>
+  ${R.money?`<div class="card">
+    <h3 style="margin-bottom:4px">Where the return comes from</h3>
+    <p>Not the repair invoices alone. Moving detection above ground takes faults out of the carriageway, which removes the closures, the crews and the disruption that sit around every invoice, and the engineer time freed from the chase goes into the schemes in Part 3 instead. The chart's fall to 72% of today by month 12 is deliberately conservative, and the pilot exists to replace that planning line with your measured number.</p>
+  </div>`:''}
+  <p class="bridge">Money is one exposure. Part 3 covers the two quieter ones: decisions made on partial data, and privacy risk sitting in the estate itself.</p>
+
+  <!-- PART 3 -->
+  <div class="part-tag"><span class="part-num">PART 3</span><span class="eyebrow">Exposure</span></div>
+  <div class="card">
+    <h3 style="margin-bottom:4px">Decisions versus data</h3>
+    <p class="section-explain">Each decision you said your team is making, checked against the data your current detection can actually supply. BLIND means the decision rests entirely on data you are not collecting.</p>
+    <table>
+      <tr><th>Decision on your desk</th><th>Data it rests on</th><th>Your position</th><th>Status</th></tr>
+      ${gapRows}
+    </table>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:4px">Privacy exposure · <span class="badge ${R.privacy.cls}">${R.privacy.level.toUpperCase()}</span></h3>
+    <p class="section-explain">Why this sits in a detection report: the sensor you choose decides whether personal data exists at the roadside at all.</p>
+    <p>${esc(R.privacy.text)}</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:4px">The estate sprawl check · <span class="badge ${R.sprawl.cls}">${R.sprawl.level}</span></h3>
+    <p class="section-explain">Our test for detection estates: bolt systems on one scheme at a time, each chosen in a vacuum, and you end up with an estate where nothing talks to anything, data stuck in vendor silos and no shared view of the network. The right move connects sensors into one view. The wrong one is just another limb.</p>
+    <p>${esc(R.sprawl.text)}</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:4px">The blind spot</h3>
+    <p class="section-explain">Every report we produce names one thing the reader is probably not seeing. Here is yours.</p>
+    <p id="nBlind" style="font-size:1.05rem;color:var(--ink)"></p>
+  </div>
+  <p class="bridge">Part 4 gets practical: which technology actually fits your needs, honestly scored, and what fixes what.</p>
+
+  <!-- PART 4 -->
+  <div class="part-tag"><span class="part-num">PART 4</span><span class="eyebrow">The map</span></div>
+  <div class="card">
+    <h3 style="margin-bottom:4px">Four technologies against your needs</h3>
+    <p class="section-explain">Scored only on the needs you selected, with your constraints applied as printed deductions. No technology wins everything, and this table says so.</p>
+    <table>${techRows}</table>
+    <p class="small" style="margin-top:12px">${honesty}</p>
+    <p class="small" style="margin-top:6px"><b>Why ${esc(techWin.name.toLowerCase())} ranks first for you:</b> it scores ${techWin.total}/10 across your selected needs after deductions, ${r1(techWin.total-R.techRank[1].total)} ahead of ${esc(R.techRank[1].name.toLowerCase())}.</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:4px">What fixes what</h3>
+    <p class="section-explain">The product families first, then your specific pains mapped to them. Each row says which part of this report flagged it.</p>
+    <div class="legend">
+      <div><b>TRUGRD / TOPGRD</b>above ground traffic sensors, up to 32 virtual zones each</div>
+      <div><b>COM HUB Relay</b>edge device fusing four radars into seamless junction tracking</div>
+      <div><b>Hybrid AI Tracking</b>radar led, camera enhanced detection for complex environments</div>
+      <div><b>Enforcement line</b>speed measurement radar</div>
+    </div>
+    <table>
+      <tr><th>Your pain</th><th>The fix</th><th>Flagged in</th></tr>
+      ${mapRows.map(r=>`<tr><td><b>${esc(r.pain)}</b>${r.cs?'<div class="tiny" style="margin-top:4px">Real example: Coventry cut installation effort, roadworks and related costs by moving detection above ground. <a href="https://www.smartmicro.com/reducing-costs-and-disruption-with-above-ground-detection-in-coventry/" target="_blank" rel="noopener">Published case study</a>.</div>':''}</td><td>${r.fix}</td><td class="small">${esc(r.flag)}</td></tr>`).join('')}
+    </table>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:4px">See it, don't imagine it</h3>
+    <p class="section-explain">A concept sketch of the pilot junction's live view, drawn from your answers. It is a drawing, not connected to anything.</p>
+    <button class="btn btn-ghost no-print" id="mockBtn" onclick="toggleMock()">Show me the pilot junction view</button>
+    <div id="mockWrap" style="display:none;margin-top:16px"></div>
+  </div>
+  <p class="bridge">Everything above narrows to one move. Part 5 is the 90 day version of it, filtered through your own goal.</p>
+
+  <!-- PART 5 -->
+  <div class="part-tag"><span class="part-num">PART 5</span><span class="eyebrow">The 90 day plan</span></div>
+  <div class="card">
+    ${goal?`<div class="goal-card"><div class="eyebrow" style="margin-bottom:4px">Your 12 month goal, in your words</div><div class="q">“${esc(goal)}”</div><p class="tiny" style="margin-top:6px">Every phase below is filtered through this.</p></div>`:''}
+    <div class="phase">
+      <div class="ph-week">WEEKS 1 – 2</div>
+      <h4>Baseline one junction</h4>
+      <p>Pick a single junction or corridor where the problem is visible. Pull 12 months of fault logs, one real repair invoice with traffic management included, and write down the data each live decision from Part 3 actually needs.</p>
+      <p class="small" id="nPhase0" style="margin-top:6px"></p>
+    </div>
+    <div class="phase">
+      <div class="ph-week">WEEKS 3 – 8</div>
+      <h4>Pilot above ground, alongside what you have</h4>
+      <p>Install above ground detection at the baseline junction with no road cutting${R.needs.includes('turning')?', with COM HUB Relay fusion so turning movements are captured from day one':''}. It runs in parallel with your existing detection, so nothing on the network is bet on the pilot.</p>
+      <p class="small" id="nPhase1" style="margin-top:6px"></p>
+      ${R.money?'<p class="tiny mono" style="margin-top:8px;color:var(--orange-dark)">≈ '+fmtMoney(R.money.annual/R.scaleMid)+' a year of exposure sits at a typical junction on your network ('+fmtMoney(R.money.annual)+' ÷ '+R.scaleMid+' junctions) — the pilot junction is where it stops first (est., from your own figures)</p>':''}
+    </div>
+    <div class="phase">
+      <div class="ph-week">WEEKS 9 – 12</div>
+      <h4>Validate and decide with your numbers</h4>
+      <p>Compare pilot data against your baseline: detection accuracy, faults, and the data gaps from Part 3. The output is a business case in your own figures, timed to your budget cycle, and a scale plan you can defend.</p>
+      <p class="small" id="nPhase2" style="margin-top:6px"></p>
+      ${R.money?'<p class="tiny mono" style="margin-top:8px;color:var(--orange-dark)">Day 90 output: the measured per junction saving × your rollout pace = the business case number this plan exists to produce</p>':''}
+    </div>
+    <div class="state-cards">
+      <div class="state-card today">
+        <h4>TODAY</h4>
+        <ul>
+          <li>${esc(a.tech?.label||'Current detection')} as the baseline</li>
+          ${R.unmet.length?'<li>'+esc(R.unmet.map(n=>NEED_LABELS[n]).join(', '))+' not collected</li>':'<li>Stated data needs covered</li>'}
+          ${R.money?'<li>'+fmtMoney(R.money.monthly)+' a month in maintenance exposure, from your figures</li>':'<li>Cost of standing still not yet measured</li>'}
+          <li>Weakest pillar: ${esc(R.weakest.name)} at ${R.weakest.score}/10</li>
+        </ul>
+      </div>
+      <div class="state-card future">
+        <h4>DAY 90</h4>
+        <ul>
+          <li>One junction running above ground detection, measured against your baseline</li>
+          <li>${R.needs.includes('turning')?'Turning movements and origin destination flowing from the pilot junction':'Every stated data need demonstrated at the pilot junction'}</li>
+          <li>A business case written in your figures, not vendor figures</li>
+          <li>A scale decision your ${a.budget?.value==='funded'?'funded project':'next budget cycle'} can act on</li>
+        </ul>
+      </div>
+    </div>
+    <div style="background:#F7F8F6;border:1.5px solid var(--line);border-radius:12px;padding:16px 20px;margin-top:14px">
+      <b style="color:var(--ink)">The one junction proof.</b>
+      <span class="small">Everything in this plan is scoped so the first evidence exists inside 90 days at one junction. If the pilot does not beat your baseline, you have lost one junction's worth of time and kept your figures. That asymmetry is the point.</span>
+      <p class="tiny mono" style="margin-top:10px;color:var(--orange-dark)">IN THE NEXT TWO WEEKS, BEFORE ANY KIT → pull the fault log for the candidate junction and count last year's callouts. That one number is the pilot's baseline, and it costs nothing.</p>
+    </div>
+  </div>
+  <p class="bridge">Part 6 is the receipts: where every answer you gave went, the published evidence, and how to read this report if it was forwarded to you.</p>
+
+  <!-- PART 6 -->
+  <div class="part-tag"><span class="part-num">PART 6</span><span class="eyebrow">Receipts</span></div>
+  <div class="card">
+    <h3 style="margin-bottom:4px">Where each answer went</h3>
+    <p class="section-explain">Nothing you told us was decorative. Every answer changed something above, and this table shows what.</p>
+    <table>${traceRows}</table>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:4px">The wider picture</h3>
+    <p class="section-explain">Published evidence, not generated claims.</p>
+    <div class="wider">
+      <div class="card"><b style="color:var(--ink)">Coventry, United Kingdom</b><p class="small" style="margin-top:4px">Above ground radar detection reduced installation effort, roadworks and related costs while supporting reliable traffic data. <a href="https://www.smartmicro.com/reducing-costs-and-disruption-with-above-ground-detection-in-coventry/" target="_blank" rel="noopener">Read the case study</a></p></div>
+      <div class="card"><b style="color:var(--ink)">The estate behind this check</b><p class="small" style="margin-top:4px">smartmicro has 28 years of radar engineering, more than 18 million sensors in the field and serves over 150 cities, with manufacturing in Braunschweig, Germany. <a href="https://www.smartmicro.com/resources/case-studies/" target="_blank" rel="noopener">More case studies</a></p></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:4px">How to read this report</h3>
+    <p class="section-explain">Written for the colleague this gets forwarded to.</p>
+    <table>
+      <tr><td><b>Verdict bands</b></td><td>Ready to pilot means the weakest pillar scores 7 or above out of 10. Plan the pilot means 4 to 6.9. Foundations first means under 4. The verdict always follows the weakest pillar, never the average.</td></tr>
+      <tr><td><b>The four pillars</b></td><td>Detection coverage is whether current sensors supply the data needed. Reliability is how often detection fails. Network resilience is what a fault costs in disruption. Procurement readiness is whether budget exists to act.</td></tr>
+      <tr><td><b>Virtual zone</b></td><td>A software defined detection area inside a radar's field of view that does the job of an in carriageway loop. One sensor supports up to 32.</td></tr>
+      <tr><td><b>Origin destination</b></td><td>Data showing where vehicles entering a junction actually go, produced by tracking them through the turn.</td></tr>
+      <tr><td><b>VRU</b></td><td>Vulnerable road user: cyclists and pedestrians.</td></tr>
+      <tr><td><b>The money formula</b></td><td>Annual exposure equals the reader's own fault count multiplied by their own cost per repair. Nothing was added by us, and the section is hidden entirely if the figures were not supplied.</td></tr>
+    </table>
+  </div>
+
+  <div class="cta-final">
+    <div class="eyebrow on-dark">The next step</div>
+    <h2>Put this report in front of an engineer</h2>
+    <p style="max-width:560px;margin:0 auto">A free consultation with smartmicro walks through your report, your junction and your figures${R.money?', including the '+fmtMoney(R.money.annual)+' a year this report calculated from your own numbers':''}. Bring the person who owns the budget decision, not just the technical team. It is a working session, not a pitch.</p>
+    <a class="btn" href="https://www.smartmicro.com/company/contact-us/" target="_blank" rel="noopener" onclick="track('cta_click')">Book the consultation</a>
+    <p class="tiny" style="margin-top:12px;color:#8B949E">Or email <a href="mailto:{{ contact_email }}" style="color:#F07E00">{{ contact_email }}</a> with this report attached.</p>
+  </div>
+
+  <div class="actions-row no-print">
+    <button class="btn-ghost btn" id="emailBtn" onclick="emailReport()">Email me this report</button>
+    <button class="btn-ghost btn" onclick="waShare()">Share on WhatsApp</button>
+    <button class="btn-ghost btn" onclick="window.print()">Download as one pager</button>
+    <button class="btn-ghost btn" onclick="startAgain()">Start again</button>
+  </div>
+  <p class="tiny" style="text-align:center;margin-top:18px">An honest note: this check is built by a radar company. That is why every deduction is printed, why cameras keep their classification crown where they earn it, and why the money maths only ever uses your figures. Forward it to whoever keeps you honest.</p>
+  `;
+  $('progressFill').style.width='100%';
+  $('stepIndicator').textContent='Report';
+}
+
+function toggleMock(){
+  const w=$('mockWrap');
+  if(w.style.display==='none'){ w.innerHTML=junctionMockSVG(); w.style.display='block'; $('mockBtn').textContent='Hide the sketch'; track('mock_open'); }
+  else { w.style.display='none'; $('mockBtn').textContent='Show me the pilot junction view'; }
+}
+function junctionMockSVG(){
+  const R=state.results;
+  const cur=currencySymbol();
+  const stats=[];
+  stats.push(['NB APPROACH','412 veh/h']);
+  if(R.needs.includes('counts')) stats.push(['CLASSIFIED','82% car · 11% LGV · 5% HGV · 2% bus']);
+  if(R.needs.includes('speed')) stats.push(['AVG SPEED','29 km/h · 85th pct 41 km/h']);
+  if(R.needs.includes('turning')) stats.push(['TURNING NB','L 18% · T 64% · R 18%']);
+  if(R.needs.includes('vru')) stats.push(['VRU','36 cyclists/h · 51 pedestrians/h']);
+  stats.push(['FAULTS','0 open · above ground estate']);
+  stats.push(['QUEUE NB','4 vehicles at stop line']);
+  const statText=stats.map((s,i)=>'<text x="452" y="'+(72+i*34)+'" font-family="IBM Plex Mono" font-size="10" fill="#8B949E">'+s[0]+'</text><text x="452" y="'+(86+i*34)+'" font-family="IBM Plex Mono" font-size="11" fill="#FFFFFF">'+s[1]+'</text>').join('');
+  const turnArrows=R.needs.includes('turning')?'<path d="M 215 250 Q 215 215 250 215" fill="none" stroke="#F07E00" stroke-width="2" marker-end="url(#arrow)"/><path d="M 205 260 L 205 160" fill="none" stroke="#F07E00" stroke-width="2" opacity=".6" marker-end="url(#arrow)"/>':'';
+  return `<svg viewBox="0 0 640 420" style="width:100%;height:auto;border-radius:12px" role="img" aria-label="Concept sketch of a fused junction live view">
+    <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#F07E00"/></marker></defs>
+    <rect width="640" height="420" fill="#14181D"/>
+    <text x="24" y="34" font-family="IBM Plex Mono" font-size="11" fill="#F07E00">PILOT JUNCTION · LIVE VIEW · CONCEPT SKETCH</text>
+    <text x="24" y="50" font-family="IBM Plex Mono" font-size="9" fill="#5B6570">Fused view · 4 radars · 1 COM HUB · no cameras required</text>
+    <rect x="170" y="60" width="90" height="340" fill="#1E242B"/>
+    <rect x="20" y="185" width="400" height="90" fill="#1E242B"/>
+    <line x1="215" y1="60" x2="215" y2="400" stroke="#3A424B" stroke-dasharray="8 8"/>
+    <line x1="20" y1="230" x2="420" y2="230" stroke="#3A424B" stroke-dasharray="8 8"/>
+    <g opacity=".9">
+      <circle cx="215" cy="70" r="5" fill="#F07E00"/><path d="M 215 70 L 185 150 A 85 85 0 0 0 245 150 Z" fill="#F07E00" opacity=".12"/>
+      <circle cx="215" cy="392" r="5" fill="#F07E00"/><path d="M 215 392 L 185 310 A 85 85 0 0 1 245 310 Z" fill="#F07E00" opacity=".12"/>
+      <circle cx="28" cy="230" r="5" fill="#F07E00"/><path d="M 28 230 L 110 200 A 85 85 0 0 1 110 260 Z" fill="#F07E00" opacity=".12"/>
+      <circle cx="412" cy="230" r="5" fill="#F07E00"/><path d="M 412 230 L 330 200 A 85 85 0 0 0 330 260 Z" fill="#F07E00" opacity=".12"/>
+    </g>
+    <rect x="180" y="290" width="70" height="18" fill="none" stroke="#F07E00" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="182" y="322" font-family="IBM Plex Mono" font-size="8" fill="#8B949E">VIRTUAL ZONE 01/32</text>
+    <rect x="180" y="150" width="70" height="18" fill="none" stroke="#5B6570" stroke-width="1.5" stroke-dasharray="4 3"/>
+    ${turnArrows}
+    <g><circle cx="212" cy="330" r="4" fill="#C9D0D8"/><circle cx="222" cy="352" r="4" fill="#C9D0D8"/><circle cx="212" cy="372" r="4" fill="#C9D0D8"/><circle cx="90" cy="222" r="4" fill="#C9D0D8"/><circle cx="330" cy="240" r="4" fill="#C9D0D8"/></g>
+    ${R.needs.includes('vru')?'<circle cx="268" cy="182" r="3" fill="#1F9D5B"/><text x="276" y="186" font-family="IBM Plex Mono" font-size="8" fill="#1F9D5B">cyclist · 42 m</text>':''}
+    <rect x="440" y="52" width="184" height="340" fill="#1E242B" rx="8"/>
+    ${statText}
+    <text x="24" y="410" font-family="IBM Plex Mono" font-size="8" fill="#5B6570">Concept only. Figures illustrative. Generated from your selected data needs${R.money?' · currency '+cur:''}.</text>
+  </svg>
+  <p class="tiny" style="margin-top:10px">Everything in this sketch maps to a need you selected: the stat panel only shows the data you said your network needs. The consultation in the next step turns this into a real configuration for a real junction.</p>`;
+}
+
+function startAgain(){
+  state.idx=0; state.answers={}; state.results=null;
+  track('start_again');
+  renderQ(); show('screen-quiz');
+}
+</script>
+</body>
+</html>
